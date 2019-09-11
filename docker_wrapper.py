@@ -4,7 +4,7 @@
 import os
 import sys
 
-mirror = "gcr.azk8s.cn"
+mirror = "buzhiyun"
 namespace = "google_containers"
 prefix = "gcr.io"
 specialPrefix = "k8s.gcr.io"
@@ -33,13 +33,14 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if len(imageArray) == 2:
-        seq = (mirror, namespace, imageArray[1])
+        seq = (mirror, imageArray[1])
+        if imageArray[1].startswith('etcd'): seq = (mirror, imageArray[1].replace('etcd','gcr-etcd'))
     else:
         seq = (mirror, imageArray[1], imageArray[2])
 
     newImage = "/".join(seq)
 
-    print("-- pull {image} from gcr.azk8s.cn instead --".format(image=image))
+    print("-- pull {image} from {imageNew} instead --".format(image=image,imageNew=newImage))
     cmd = "docker pull {image}".format(image=newImage)
     execute_sys_cmd(cmd)
 
