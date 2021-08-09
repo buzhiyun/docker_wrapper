@@ -26,19 +26,15 @@ if __name__ == "__main__":
     # image name like k8s.gcr.io/kube-apiserver:v1.14.1 or gcr.io/google_containers/kube-apiserver:v1.14.1
     image = sys.argv[2]
     imageArray = image.split("/")
-    
-    if imageArray[0] != prefix and imageArray[0] != specialPrefix:
-        cmd = "docker pull {image}".format(image=image)
-        execute_sys_cmd(cmd)
-        sys.exit(0)
+    newImage = ""
+    if image.startswith(specialPrefix) :
+        newImage = image.replace(specialPrefix,'registry.aliyuncs.com/google_containers')
 
-    if len(imageArray) == 2:
-        seq = (mirror, imageArray[1])
-        if imageArray[1].startswith('etcd'): seq = (mirror, imageArray[1].replace('etcd','gcr-etcd'))
-    else:
-        seq = (mirror, imageArray[1], imageArray[2])
+    if image.startswith(prefix):
+        newImage = image.replace(prefix,'registry.aliyuncs.com')
 
-    newImage = "/".join(seq)
+    #newImage = "/".join(seq)
+    print(newImage)
 
     print("-- pull {image} from {imageNew} instead --".format(image=image,imageNew=newImage))
     cmd = "docker pull {image}".format(image=newImage)
